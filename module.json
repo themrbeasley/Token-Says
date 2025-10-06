@@ -17,6 +17,7 @@
   "esmodules": [
     "scripts/index.js",
     "scripts/token-says.js"
+    ,"scripts/header-controls.js"
   ],
   "languages": [
     {
@@ -28,7 +29,7 @@
   ],
   "compatibility": {
     "minimum": "11",
-    "verified": "12.328"
+    "verified": "13.0.0"
   },
   "id": "token-says",
   "packs": [
