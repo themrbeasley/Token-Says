@@ -1,6 +1,18 @@
 import {tokenSays} from '../token-says.js';
 import {PF2ESKILLOPS, PF2ESAVEOPS, PF2EABILITYOPS} from './constants.js';
 
+/*
+ * Foundry VTT v13 removed the global Ray constructor and instead exposes
+ * it under foundry.canvas.geometry.Ray. To preserve backwards
+ * compatibility with earlier versions of Foundry, we resolve the Ray
+ * class once up‐front. In pre‑v13 builds the global Ray will still be
+ * defined; in v13 we fall back to the new namespaced version. See
+ * https://foundryvtt.com/api/classes/foundry.canvas.geometry.Ray.html
+ * for details. Without this shim Token Says would throw a ReferenceError
+ * when trying to instantiate a Ray.
+ */
+const RayClass = globalThis.Ray ?? (foundry?.canvas?.geometry?.Ray ?? null);
+
 export function outOfRangNum(inNumber, min, max, returnIfOut){
     if(inNumber === null || isNaN(inNumber) || inNumber < min || inNumber > max) {return returnIfOut} else {return inNumber}
 }
@@ -10,9 +22,9 @@ export function activeEffectToWorkflowData(document, isDelete = false){
         documentName: document.label,
         documentType: isDelete ? "effectDelete" : "effectAdd",
         speaker: {
-            scene: document.parent.token ? document.parent.token.parent.id : canvas.scene.id, 
-            actor: document.parent.id, 
-            token: document.parent.token ? document.parent.token.id : canvas.scene.tokens.find(t => t.actor && t.actor?.id === document.parent.id)?.id, 
+            scene: document.parent.token ? document.parent.token.parent.id : canvas.scene.id,
+            actor: document.parent.id,
+            token: document.parent.token ? document.parent.token.id : canvas.scene.tokens.find(t => t.actor && t.actor?.id === document.parent.id)?.id,
             alias: document.parent.token ? document.parent.token.name : document.parent.name
         }
     }
@@ -24,9 +36,9 @@ export function checkToWorkflowData(actor, type, check, options){
         documentName: check,
         documentType: type,
         speaker: {
-            scene: actor.token ? actor.token.parent.id : game.scenes.current.id, 
-            actor: actor.id, 
-            token: actor.token?.id, 
+            scene: actor.token ? actor.token.parent.id : game.scenes.current.id,
+            actor: actor.id,
+            token: actor.token?.id,
             alias: actor.token ? actor.token.name : actor.name
         }
     }
@@ -51,10 +63,11 @@ export function inDistance(provokingToken, respondingToken, distance){
 }
 
 export function inView(provokingToken, respondingToken){
-    const r = new Ray(provokingToken?.object?.center ?? provokingToken, respondingToken.center), options = {type:"sight" }
+    // Use the resolved RayClass if available; fall back to the global Ray for older builds
+    const RayCtor = RayClass || Ray;
+    const r = new RayCtor(provokingToken?.object?.center ?? provokingToken, respondingToken.center), options = {type:"sight" }
     return (CONFIG.Canvas.polygonBackends.sight.testCollision(r.A, r.B, options).length || !respondingToken.hasSight) ? false : true
 }
-
 
 export function chatMessageToWorkflowData(message){
     if(message.flags?.TOKENSAYS?.cancel || (game.settings.get(tokenSays.ID,'suppressPrivateGMRoles') && message.whisper?.length)) return
@@ -161,7 +174,6 @@ export function promptToWorkflowData(token, type){
     }
 }
 
-
 export function damageToWorkflowData(d, change, diff){
     if(change.system?.attributes?.hp?.value === undefined) {
         return
@@ -169,7 +181,6 @@ export function damageToWorkflowData(d, change, diff){
     let dmgSystem = '';
     if(diff.dnd5e) {
         dmgSystem = 'dnd5e'
- 
     } else if(diff.damageTaken) {
         dmgSystem = 'pf2e'
     } else {
@@ -177,13 +188,11 @@ export function damageToWorkflowData(d, change, diff){
         // More systems can be handled later
         return
     }
-
-   const hpDiff = {
+    const hpDiff = {
         start: 0,
         end: 0,
         max: 0,
     }
-
     if(dmgSystem === 'dnd5e') {
         hpDiff.start = diff.dnd5e.hp.value
         hpDiff.end = change.system.attributes.hp.value
@@ -191,14 +200,11 @@ export function damageToWorkflowData(d, change, diff){
         hpDiff.start = change.system.attributes.hp.value + diff.damageTaken
         hpDiff.end = change.system.attributes.hp.value
     }
-
     // This is healing, not damage. I'll handle this scenario at a later date
     if(hpDiff.end >= hpDiff.start) {
         return
     }
-
     hpDiff.max = d.system.attributes.hp.max
-
     const taken = hpDiff.start - hpDiff.end
     let dmgLevel = 'avg'
     if(taken >= hpDiff.max * .5) {        
@@ -219,11 +225,11 @@ export function damageToWorkflowData(d, change, diff){
     }
 }
 
-
 function _ray(start, end){
     const orig = new PIXI.Point(...canvas.grid.getCenter(start.x, start.y));
     const dest = new PIXI.Point(...canvas.grid.getCenter(end.x, end.y));
-    return new Ray(orig, dest);
+    const RayCtor = RayClass || Ray;
+    return new RayCtor(orig, dest);
 }
 
 export function wildcardName(ObjArr, names, isNameArray = false){
