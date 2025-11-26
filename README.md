@@ -1,6 +1,3 @@
-![Latest Release Download Count](https://img.shields.io/github/downloads/themrbeasley/Token-Says/latest/Token-Says_1.13.4.zip)
-
-
 # 📣 Token Says
 
 Make your worlds louder, funnier, more dramatic, and more alive.
