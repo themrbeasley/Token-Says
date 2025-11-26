@@ -11,6 +11,10 @@
     {
       "name": "Hanna",
       "flags": {}
+    },
+    {
+      "name": "Mr. Beasley",
+      "flags": {}
     }
   ],
   "description": "Tokens invoke chat bubbles, chat messages and audio based on in game actions.",
@@ -49,8 +53,8 @@
     "styles/token-says.css"
   ],
   "title": "Token Says",
-  "version": "1.13.2",
-  "url": "https://github.com/hanna-greaves/Token-Says",
+  "version": "1.13.4",
+  "url": "https://github.com/themrbeasley/Token-Says",
   "manifest": "https://raw.githubusercontent.com/themrbeasley/Token-Says/refs/heads/main/module.json",
   "download": "https://github.com/themrbeasley/Token-Says/releases/download/1.13.4/module.zip"
 }
