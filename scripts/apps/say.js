@@ -67,7 +67,8 @@ export class say {
         this.suppressQuotes = false,
         this.volume = 0.50,
         this.whisper = '',
-        this.limit = 0
+        this.limit = 0,
+        this.ownerId = ''
     }
 
     get audioCompendiumName(){

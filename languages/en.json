@@ -193,10 +193,13 @@
       },
       "tokenSaysRules.name": "Configure Token Sayings",
       "tokenSaysRules.label": "Open Sayings",
+      "tokenSaysPlayerRules.name": "My Token Sayings",
+      "tokenSaysPlayerRules.label": "My Sayings",
       "tokenSaysRule.name": "Configure Saying",
       "subheader":{
         "name": "Saying",
-        "isActive": "Active"
+        "isActive": "Active",
+        "playerSaying": "Player saying"
       },
       "export.title": "Export Token Sayings",
       "import": {

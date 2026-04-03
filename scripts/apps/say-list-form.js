@@ -5,188 +5,236 @@ import {parseSeparator} from './helpers.js';
 
 export var lastSearch = '';
 
-export class TokenSaysSettingsConfig extends FormApplication {
-    static get defaultOptions(){
-      return foundry.utils.mergeObject(super.defaultOptions, {
-        title : game.i18n.localize("TOKENSAYS.setting.tokenSaysRules.name"),
-        id : "token-says-rules",
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+export class TokenSaysSettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
+    static DEFAULT_OPTIONS = {
+        id: "token-says-rules",
         classes: ["sheet", "token-says"],
-        template : tokenSays.TEMPLATES.SAYS,
-        width : 700,
-        height : "auto",
-        closeOnSubmit: false,
-        submitOnChange: true
-      });
-    }
-  
-    async _handleButtonClick(event) {
-      const clickedElement = $(event.currentTarget);
-      const action = clickedElement.data().action;
-      const sayId = clickedElement.parents('[data-id]')?.data()?.id;
-  
-      switch (action) {
-        case 'copy': {
-          const copied = await says.copySay(sayId)
-          this.refresh();
-          new TokenSaysSayForm(copied).render(true);
-          break;
+        window: { title: "TOKENSAYS.setting.tokenSaysRules.name" },
+        position: { width: 700 }
+    };
+
+    static PARTS = {
+        form: { template: tokenSays.TEMPLATES.SAYS }
+    };
+
+    async _prepareContext(options) {
+        const isGM = game.user.isGM;
+        let rawSays;
+        if (isGM) {
+            rawSays = { ...says._says, ...says._playerSays };
+        } else {
+            rawSays = says._mySays;
         }
-        case 'create': {
-          const sy =  await says.newRollTableSay(); 
-          this.refresh();
-          new TokenSaysSayForm(sy.id).render(true);
-          break;
-        }
-        case 'edit': {
-          new TokenSaysSayForm(sayId).render(true);
-          break;
-        }
-        case 'delete': {
-          new Dialog({
-            title: game.i18n.localize("TOKENSAYS.clear"),
-            content: game.i18n.localize("TOKENSAYS.confirm"),
-            buttons: {
-              yes: {
-                icon: '<i class="fas fa-check"></i>',
-                label: game.i18n.localize("TOKENSAYS.yes"),
-                callback: async () => {
-                  await says.deleteSay(sayId);
-                  this.refresh();
+        const saysList = Object.values(rawSays)
+            .map(s => {
+                const instance = says._toClass(s);
+                if (isGM && instance.ownerId) {
+                    instance.ownerName = game.users.get(instance.ownerId)?.name ?? 'Unknown Player';
                 }
-              },
-              no: {
-                icon: '<i class="fas fa-times"></i>',
-                label: game.i18n.localize("TOKENSAYS.cancel")
-              }
-            },
-            default: "no"
-          }, {
-            width: 400
-          }).render(true);
-          break;
+                return instance;
+            })
+            .sort((a, b) => (a.label ?? '').localeCompare(b.label ?? ''));
+
+        return { says: saysList, isGM, search: lastSearch };
+    }
+
+    _onRender(context, options) {
+        const html = this.element;
+
+        html.querySelectorAll('[data-action]').forEach(el => {
+            el.addEventListener('click', (event) => this._handleButtonClick(event));
+        });
+
+        html.querySelector('#token-says-search-clear')
+            ?.addEventListener('click', (e) => this._clearFilter(e));
+        html.querySelector('#token-says-search-input')
+            ?.addEventListener('input', (e) => this._preFilter(e));
+        html.querySelector('#token-says-export-config')
+            ?.addEventListener('click', () => this._exportSettingsToJSON());
+        html.querySelector('#token-says-import-config')
+            ?.addEventListener('click', () => this._importSettingsFromJSON());
+
+        // Active-status toggles handled directly (no form submit needed)
+        html.querySelectorAll('input.rule-active[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const container = e.target.closest('[data-id]');
+                if (!container) return;
+                const id = container.dataset.id;
+                const ownerId = container.dataset.owner ?? '';
+                this._updateStatus(id, ownerId, e.target.checked);
+            });
+        });
+
+        this._filter();
+    }
+
+    async _updateStatus(id, ownerId, status) {
+        if (ownerId) {
+            if (game.user.isGM) {
+                await says.updatePlayerSayForUser(ownerId, id, { isActive: status });
+            } else {
+                await says.updatePlayerSay(id, { isActive: status });
+            }
+        } else {
+            await says.updateSayStatus(id, status);
         }
-        default: break;
-      }
     }
-  
+
+    async _handleButtonClick(event) {
+        const el = event.currentTarget;
+        const action = el.dataset.action;
+        const container = el.closest('[data-id]');
+        const sayId = container?.dataset?.id;
+        const ownerId = container?.dataset?.owner ?? '';
+        const isPlayerSaying = ownerId !== '';
+
+        switch (action) {
+            case 'copy': {
+                let newId, formOwnerId;
+                if (game.user.isGM && !isPlayerSaying) {
+                    newId = await says.copySay(sayId);
+                    formOwnerId = '';
+                } else if (game.user.isGM && isPlayerSaying) {
+                    // GM copies a player saying → becomes a GM saying
+                    newId = await says.copySayFromPlayer(sayId);
+                    formOwnerId = '';
+                } else {
+                    newId = await says.copyPlayerSay(sayId);
+                    formOwnerId = game.userId;
+                }
+                this.refresh();
+                new TokenSaysSayForm(newId, formOwnerId).render(true);
+                break;
+            }
+            case 'create': {
+                if (game.user.isGM) {
+                    const sy = await says.newRollTableSay();
+                    this.refresh();
+                    new TokenSaysSayForm(sy.id, '').render(true);
+                } else {
+                    const sy = await says.newPlayerSay('rollTable');
+                    this.refresh();
+                    new TokenSaysSayForm(sy.id, game.userId).render(true);
+                }
+                break;
+            }
+            case 'edit': {
+                new TokenSaysSayForm(sayId, ownerId).render(true);
+                break;
+            }
+            case 'delete': {
+                const DialogV2 = foundry.applications.api.DialogV2;
+                DialogV2.confirm({
+                    window: { title: game.i18n.localize("TOKENSAYS.clear") },
+                    content: `<p>${game.i18n.localize("TOKENSAYS.confirm")}</p>`,
+                    yes: {
+                        callback: async () => {
+                            if (game.user.isGM && !isPlayerSaying) {
+                                await says.deleteSay(sayId);
+                            } else if (game.user.isGM && isPlayerSaying) {
+                                await says.deletePlayerSayForUser(ownerId, sayId);
+                            } else {
+                                await says.deletePlayerSay(sayId);
+                            }
+                            this.refresh();
+                        }
+                    }
+                });
+                break;
+            }
+            default: break;
+        }
+    }
+
     refresh() {
-      this.render(true);
+        this.render({ force: true });
     }
-  
-    activateListeners(html) {
-      super.activateListeners(html);
-      html.on('click', "[data-action]", this._handleButtonClick.bind(this));
-      html.on('click',"#token-says-search-clear", this._clearFilter.bind(this))
-      html.on('input', '#token-says-search-input', this._preFilter.bind(this))
-      html.on('click', "#token-says-export-config", this._exportSettingsToJSON.bind(this))
-      html.on('click', "#token-says-import-config", this._importSettingsFromJSON.bind(this))
-    }
-  
-    getData(options){
-      return {
-        says: Object.values(says.says).sort((a, b) => a.label?.localeCompare(b.label)),
-        search: lastSearch
-      }
-    }
-  
+
     _preFilter(event) {
         this.setLastSearch(event.target.value);
         this._filter();
     }
-  
+
     _filter() {
-      const clear = document.getElementById("token-says-search-clear");
-      const searchBox = document.getElementById("token-says-search-input");
-  
-      if(lastSearch != ''){
-        clear.classList.remove('hidden');
-        searchBox.classList.add('outline');
-      } else {
-        clear.classList.add('hidden');
-        searchBox.classList.remove('outline');
-      }
-      $("form.token-says").find(".rule").each(function() {$(this).hide()})
-      $("form.token-says").find(".rule .rule-name .ts-search-name").each(function() {
-        if(!lastSearch || parseSeparator(lastSearch).find(s => (!this.innerText.startsWith('not:') && this.innerText.toLowerCase().search(s.toLowerCase()) > -1) ||  (this.innerText.startsWith('not:') && this.innerText.toLowerCase().search(s.toLowerCase()) === -1))) {
-          $(this).closest('.rule').show();
-        } 
-      });
-      this.setPosition();
+        const html = this.element;
+        if (!html) return;
+
+        const clear = html.querySelector("#token-says-search-clear");
+        const searchBox = html.querySelector("#token-says-search-input");
+
+        if (lastSearch !== '') {
+            clear?.classList.remove('hidden');
+            searchBox?.classList.add('outline');
+        } else {
+            clear?.classList.add('hidden');
+            searchBox?.classList.remove('outline');
+        }
+
+        html.querySelectorAll("form.token-says .rule").forEach(el => el.style.display = 'none');
+        html.querySelectorAll("form.token-says .rule .rule-name .ts-search-name").forEach(el => {
+            const text = el.textContent ?? '';
+            if (!lastSearch || parseSeparator(lastSearch).find(s =>
+                (!text.startsWith('not:') && text.toLowerCase().includes(s.toLowerCase())) ||
+                (text.startsWith('not:') && !text.toLowerCase().includes(s.toLowerCase()))
+            )) {
+                el.closest('.rule').style.display = '';
+            }
+        });
     }
-  
-    _clearFilter(event){
+
+    _clearFilter(event) {
         event.preventDefault();
-        document.getElementById("token-says-search-input").value = '';
+        const searchInput = this.element?.querySelector("#token-says-search-input");
+        if (searchInput) searchInput.value = '';
         this.setLastSearch('');
         this._filter();
-        this.setPosition();
     }
 
-    setLastSearch(search){
+    setLastSearch(search) {
         lastSearch = search;
     }
-  
-    async _updateObject(event, formData) {
-      const idToUpdate = $(event.currentTarget).parents('[data-id]')?.data()?.id; 
-      if(!idToUpdate){return};
-      const expandedData = foundry.utils.expandObject(formData); 
-      const statusUpdate = expandedData[idToUpdate].isActive;
-      await says.updateSayStatus(idToUpdate, statusUpdate);
-    }
-  
+
     async _exportSettingsToJSON() {
-      await says.deleteSay("rules");
-      saveDataToFile(JSON.stringify(says._says, null, 2), "text/json", `fvtt-token-says-rules.json`);  
+        await says.deleteSay("rules");
+        saveDataToFile(JSON.stringify(says._says, null, 2), "text/json", `fvtt-token-says-rules.json`);
     }
-  
+
     async _importFromJSON(json) {
-      const data = JSON.parse(json);
-      tokenSays.log(false, 'JSON Import Parse Complete ', data);
-
-      let response = await says.importSays(data); 
-      tokenSays.log(false, 'Rules Import Complete ', response);
-
-      this.refresh();
-
-      if(response) {
-        let info = game.i18n.localize("TOKENSAYS.setting.import.complete") 
-         + ': ' + response.added.length + ' ' + game.i18n.localize("TOKENSAYS.setting.import.success") 
-         + ', ' + response.error.length + ' ' + game.i18n.localize("TOKENSAYS.setting.import.error") 
-         + ', ' + response.skipped.length + ' ' + game.i18n.localize("TOKENSAYS.setting.import.skipped");
-        ui.notifications?.info(info)
-      }
-
-      return response
+        const data = JSON.parse(json);
+        tokenSays.log(false, 'JSON Import Parse Complete ', data);
+        let response = await says.importSays(data);
+        tokenSays.log(false, 'Rules Import Complete ', response);
+        this.refresh();
+        if (response) {
+            let info = game.i18n.localize("TOKENSAYS.setting.import.complete")
+                + ': ' + response.added.length + ' ' + game.i18n.localize("TOKENSAYS.setting.import.success")
+                + ', ' + response.error.length + ' ' + game.i18n.localize("TOKENSAYS.setting.import.error")
+                + ', ' + response.skipped.length + ' ' + game.i18n.localize("TOKENSAYS.setting.import.skipped");
+            ui.notifications?.info(info);
+        }
+        return response;
     }
-  
+
     async _importSettingsFromJSON() {
-      const options = {
-        name: "Token Says",
-        entity: "token-says"
-      }
-      const content = await renderTemplate("templates/apps/import-data.html", options);
-      new Dialog({
-        title: game.i18n.localize("TOKENSAYS.setting.import.title"),
-        content: content,
-        buttons: {
-          import: {
-            icon: '<i class="fas fa-file-import"></i>',
-            label: game.i18n.localize("TOKENSAYS.import"),
-            callback: html => {
-              const form = html.find("form")[0];
-              if ( !form.data.files.length ) return ui.notifications?.error(game.i18n.localize("TOKENSAYS.setting.import.noFile"));
-              readTextFromFile(form.data.files[0]).then(json => this._importFromJSON(json));
+        const options = { name: "Token Says", entity: "token-says" };
+        const content = await renderTemplate("templates/apps/import-data.html", options);
+        const DialogV2 = foundry.applications.api.DialogV2;
+        DialogV2.prompt({
+            window: { title: game.i18n.localize("TOKENSAYS.setting.import.title") },
+            content,
+            ok: {
+                icon: '<i class="fas fa-file-import"></i>',
+                label: game.i18n.localize("TOKENSAYS.import"),
+                callback: (event, button, dialog) => {
+                    const form = dialog.querySelector("form");
+                    if (!form?.data?.files?.length) {
+                        return ui.notifications?.error(game.i18n.localize("TOKENSAYS.setting.import.noFile"));
+                    }
+                    readTextFromFile(form.data.files[0]).then(json => this._importFromJSON(json));
+                }
             }
-          },
-          no: {
-            icon: '<i class="fas fa-times"></i>',
-            label: game.i18n.localize("TOKENSAYS.cancel")
-          }
-        },
-        default: "import"
-      }, {
-        width: 400
-      }).render(true);
+        });
     }
-  }
-  
+}

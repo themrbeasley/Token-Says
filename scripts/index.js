@@ -20,6 +20,15 @@ Hooks.once('init', async function() {
         type: TokenSaysSettingsConfig,
         restricted: true
     });
+
+    // Non-restricted entry so players can access their own sayings
+    game.settings.registerMenu(module, "tokenSaysPlayerRules", {
+        name: game.i18n.localize("TOKENSAYS.setting.tokenSaysPlayerRules.name"),
+        label: game.i18n.localize("TOKENSAYS.setting.tokenSaysPlayerRules.label"),
+        icon: "fas fa-comment-dots",
+        type: TokenSaysSettingsConfig,
+        restricted: false
+    });
     
     game.settings.register(module, 'isActive', {
         name: game.i18n.localize('TOKENSAYS.setting.isActive.label'),
@@ -211,19 +220,23 @@ Hooks.once('init', async function() {
         if(data) workflow.go(id, data)
     });
 
-    //hook to ensure that, on token says settings render, the current tab is not lost
+    // Re-apply search filter and form state on re-render (works for both FormApplication and ApplicationV2)
     Hooks.on("renderApplication", (app, html, options) => {
         if(app.id ==="token-says-rules"){
-            app._filter();
+            app._filter?.();
         } else if (app.id ==="token-says-rules-rule"){
-            app._duplicateNameWarning()
-            app._notExistsWarning()
+            app._duplicateNameWarning?.();
+            app._notExistsWarning?.();
         }
     });
 
-    Hooks.on("renderTokenConfig", (app, html, data) => {
-        TokenSaysTokenForm._init(app, html, data);
-    });
+    // renderTokenConfig is V12 API; V13+ uses header-controls.js
+    const _majorVersion = parseInt((game.version ?? game.release?.version ?? "0").split(".")[0], 10);
+    if (_majorVersion < 13) {
+        Hooks.on("renderTokenConfig", (app, html, data) => {
+            TokenSaysTokenForm._init(app, html, data);
+        });
+    }
 
 
     Hooks.on(`${tokenSays.ID}.sayingComplete`, (saying) => {

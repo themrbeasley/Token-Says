@@ -14,9 +14,9 @@ Hooks.once("init", () => {
   // Only apply the header controls for Foundry V13 and later
   const version = game.version ?? game.release?.version;
   if (!version) return;
-  // We treat any version starting with "13" as a V13 series release
-  const isV13 = version.startsWith("13");
-  if (!isV13) return;
+  // Apply for any version >= 13 (covers V13, V14, and beyond)
+  const majorVersion = parseInt(version.split(".")[0], 10);
+  if (majorVersion < 13) return;
 
   /**
    * Determine the actor associated with a TokenConfig or PrototypeTokenConfig.
@@ -41,10 +41,7 @@ Hooks.once("init", () => {
       icon: "fa-solid fa-comment-dots",
       label: "Token Says",
       name: "token-says",
-      visible: () => {
-        // Show to GMs and users with GM-type permissions
-        return game.user?.isGM ?? false;
-      },
+      visible: () => true,
       onClick: () => {
         const actor = getActorFromApp(app);
         // Open the Token Says settings form using the same logic
