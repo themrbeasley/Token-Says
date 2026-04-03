@@ -47,6 +47,7 @@ Hooks.once('init', () => {
         }
 
         _onRender(context, options) {
+            tokenSays.TokenSaysSettingsConfig = this;
             const html = this.element;
 
             html.querySelectorAll('[data-action]').forEach(el => {
@@ -152,6 +153,11 @@ Hooks.once('init', () => {
                 }
                 default: break;
             }
+        }
+
+        async close(options = {}) {
+            tokenSays.TokenSaysSettingsConfig = null;
+            return super.close(options);
         }
 
         refresh() {

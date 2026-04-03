@@ -47,7 +47,7 @@ export class tokenSays {
       }
 
     static initialize() {
-        this.TokenSaysSettingsConfig = new TokenSaysSettingsConfig();
+        this.TokenSaysSettingsConfig = null; // Set by TokenSaysSettingsConfig when it opens
     }
 
     /**
