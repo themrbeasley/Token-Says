@@ -199,22 +199,21 @@ import { foundryInterface } from '../foundry-interface.js'
     }
 
     static async deletePlayerSay(id) {
-        const playerRules = foundry.utils.deepClone(game.user.getFlag(tokenSays.ID, 'rules') ?? {});
-        const sy = playerRules[id];
-        delete playerRules[id];
-        await game.user.setFlag(tokenSays.ID, 'rules', playerRules);
-        return sy;
+        // Use the -=key operator so Foundry removes the entry rather than
+        // merging the object (a plain setFlag with the key absent gets merged
+        // back in by Foundry's document update machinery).
+        return await game.user.update({
+            [`flags.${tokenSays.ID}.rules.-=${id}`]: null
+        });
     }
 
     // GM can delete a specific player's saying
     static async deletePlayerSayForUser(userId, id) {
         const user = game.users.get(userId);
         if (!user) return;
-        const playerRules = foundry.utils.deepClone(user.getFlag(tokenSays.ID, 'rules') ?? {});
-        const sy = playerRules[id];
-        delete playerRules[id];
-        await user.setFlag(tokenSays.ID, 'rules', playerRules);
-        return sy;
+        return await user.update({
+            [`flags.${tokenSays.ID}.rules.-=${id}`]: null
+        });
     }
 
     static async copyPlayerSay(id) {
