@@ -244,6 +244,14 @@ Community feedback drives development.
 
 ---
 
+# 🤖 Maintenance
+
+This module is actively maintained with the assistance of [Claude Code](https://claude.com/claude-code), Anthropic's AI coding tool.
+Claude Code assists with code review, refactoring, bug fixes, and compatibility updates.
+All changes are reviewed and approved by the module maintainer before being merged.
+
+---
+
 # 🙏 Acknowledgements
 
 A huge thank-you to the original creators and contributors:
