@@ -1,4 +1,5 @@
 import { tokenSays } from './token-says.js';
+import { TokenSaysSettingsConfig } from './apps/say-list-form.js';
 
 /*
  * Token Says header controls for Foundry V13
@@ -14,9 +15,9 @@ Hooks.once("init", () => {
   // Only apply the header controls for Foundry V13 and later
   const version = game.version ?? game.release?.version;
   if (!version) return;
-  // We treat any version starting with "13" as a V13 series release
-  const isV13 = version.startsWith("13");
-  if (!isV13) return;
+  // Apply for any version >= 13 (covers V13, V14, and beyond)
+  const majorVersion = parseInt(version.split(".")[0], 10);
+  if (majorVersion < 13) return;
 
   /**
    * Determine the actor associated with a TokenConfig or PrototypeTokenConfig.
@@ -41,25 +42,17 @@ Hooks.once("init", () => {
       icon: "fa-solid fa-comment-dots",
       label: "Token Says",
       name: "token-says",
-      visible: () => {
-        // Show to GMs and users with GM-type permissions
-        return game.user?.isGM ?? false;
-      },
+      visible: () => true,
       onClick: () => {
         const actor = getActorFromApp(app);
-        // Open the Token Says settings form using the same logic
-        // used by the module's original token header button.  The
-        // TokenSaysSettingsConfig instance is created during module
-        // initialization and stored on the tokenSays class.
-        const form = tokenSays.TokenSaysSettingsConfig;
-        if (form) {
-          // Populate search field with the token name if available
-          const tokenName = actor?.name ?? app.token?.name ?? null;
-          if (tokenName && typeof form.setLastSearch === 'function') {
-            form.setLastSearch(tokenName.trim());
-          }
-          form.render(true);
+        const tokenName = actor?.name ?? app.token?.name ?? null;
+        // Use the currently-open instance if it exists, otherwise create one.
+        // TokenSaysSettingsConfig is a live binding set after Hooks.once('init').
+        const form = tokenSays.TokenSaysSettingsConfig ?? new TokenSaysSettingsConfig();
+        if (tokenName && typeof form.setLastSearch === 'function') {
+          form.setLastSearch(String(tokenName).trim());
         }
+        form.render({ force: true });
       }
     });
   }

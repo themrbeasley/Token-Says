@@ -47,7 +47,20 @@ export class tokenSays {
       }
 
     static initialize() {
-        this.TokenSaysSettingsConfig = new TokenSaysSettingsConfig();
+        this.TokenSaysSettingsConfig = null; // Set by TokenSaysSettingsConfig when it opens
+    }
+
+    /**
+     * Open (or bring to front) the Token Says settings list, optionally pre-seeding the search.
+     * Creates a new instance if the list is not currently open.
+     * @param {string|null} searchTerm  Token/actor name to pre-fill the search box with
+     */
+    static openSettingsConfig(searchTerm) {
+        const form = this.TokenSaysSettingsConfig ?? new TokenSaysSettingsConfig();
+        if (searchTerm && typeof form.setLastSearch === 'function') {
+            form.setLastSearch(String(searchTerm).trim());
+        }
+        form.render(true);
     }
 
     /**

@@ -34,7 +34,7 @@
     }
   ],
   "compatibility": {
-    "minimum": "11",
+    "minimum": "12",
     "verified": "13.0.0"
   },
   "id": "token-says",
