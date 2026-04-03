@@ -30,8 +30,9 @@ Hooks.once('init', () => {
             id: "token-says-rules-rule",
             classes: ["sheet", "token-says-rule"],
             window: { title: "TOKENSAYS.setting.tokenSaysRule.name" },
-            position: { width: 400 },
-            form: { closeOnSubmit: true, handler: TokenSaysSayForm._onSubmit }
+            position: { width: 400 }
+            // form submission is handled explicitly in _onRender to ensure
+            // e.preventDefault() fires regardless of ApplicationV2 build differences
         };
 
         static PARTS = {
@@ -71,8 +72,19 @@ Hooks.once('init', () => {
         }
 
         _onRender(context, options) {
-            super._onRender(context, options);
             const html = this.element;
+
+            // Explicitly intercept form submit so the browser never navigates away.
+            // We do NOT rely on DEFAULT_OPTIONS.form.handler here because
+            // HandlebarsApplicationMixin's _onRender form-listener setup varies
+            // across Foundry builds. The explicit listener is authoritative.
+            html.querySelector('form')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const formData = new FormDataExtended(e.currentTarget);
+                await TokenSaysSayForm._onSubmit.call(this, e, e.currentTarget, formData);
+                await this.close();
+            });
 
             // --- Tab navigation ---
             const tabItems = html.querySelectorAll('.tabs .item');
@@ -233,7 +245,9 @@ Hooks.once('init', () => {
                 } else {
                     await says.updateSay(expandedData.id, expandedData, true);
                 }
-                tokenSays.TokenSaysSettingsConfig?.refresh();
+                if (tokenSays.TokenSaysSettingsConfig?.rendered) {
+                    tokenSays.TokenSaysSettingsConfig.refresh();
+                }
             } catch (err) {
                 console.error('Token Says | Error saving saying:', err);
                 ui.notifications?.error('Token Says: Failed to save saying. Check the console for details.');

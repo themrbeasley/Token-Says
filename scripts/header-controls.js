@@ -1,4 +1,5 @@
 import { tokenSays } from './token-says.js';
+import { TokenSaysSettingsConfig } from './apps/say-list-form.js';
 
 /*
  * Token Says header controls for Foundry V13
@@ -45,7 +46,13 @@ Hooks.once("init", () => {
       onClick: () => {
         const actor = getActorFromApp(app);
         const tokenName = actor?.name ?? app.token?.name ?? null;
-        tokenSays.openSettingsConfig(tokenName);
+        // Use the currently-open instance if it exists, otherwise create one.
+        // TokenSaysSettingsConfig is a live binding set after Hooks.once('init').
+        const form = tokenSays.TokenSaysSettingsConfig ?? new TokenSaysSettingsConfig();
+        if (tokenName && typeof form.setLastSearch === 'function') {
+          form.setLastSearch(String(tokenName).trim());
+        }
+        form.render({ force: true });
       }
     });
   }
