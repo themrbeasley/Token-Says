@@ -44,19 +44,8 @@ Hooks.once("init", () => {
       visible: () => true,
       onClick: () => {
         const actor = getActorFromApp(app);
-        // Open the Token Says settings form using the same logic
-        // used by the module's original token header button.  The
-        // TokenSaysSettingsConfig instance is created during module
-        // initialization and stored on the tokenSays class.
-        const form = tokenSays.TokenSaysSettingsConfig;
-        if (form) {
-          // Populate search field with the token name if available
-          const tokenName = actor?.name ?? app.token?.name ?? null;
-          if (tokenName && typeof form.setLastSearch === 'function') {
-            form.setLastSearch(tokenName.trim());
-          }
-          form.render(true);
-        }
+        const tokenName = actor?.name ?? app.token?.name ?? null;
+        tokenSays.openSettingsConfig(tokenName);
       }
     });
   }

@@ -71,6 +71,7 @@ Hooks.once('init', () => {
         }
 
         _onRender(context, options) {
+            super._onRender(context, options);
             const html = this.element;
 
             // --- Tab navigation ---
@@ -221,17 +222,22 @@ Hooks.once('init', () => {
 
         // `this` is bound to the instance by ApplicationV2 when calling the handler
         static async _onSubmit(event, form, formData) {
-            const expandedData = foundry.utils.expandObject(formData.object);
-            if (this.ownerId) {
-                if (game.user.isGM) {
-                    await says.updatePlayerSayForUser(this.ownerId, expandedData.id, expandedData, true);
+            try {
+                const expandedData = foundry.utils.expandObject(formData.object);
+                if (this.ownerId) {
+                    if (game.user.isGM) {
+                        await says.updatePlayerSayForUser(this.ownerId, expandedData.id, expandedData, true);
+                    } else {
+                        await says.updatePlayerSay(expandedData.id, expandedData, true);
+                    }
                 } else {
-                    await says.updatePlayerSay(expandedData.id, expandedData, true);
+                    await says.updateSay(expandedData.id, expandedData, true);
                 }
-            } else {
-                await says.updateSay(expandedData.id, expandedData, true);
+                tokenSays.TokenSaysSettingsConfig?.refresh();
+            } catch (err) {
+                console.error('Token Says | Error saving saying:', err);
+                ui.notifications?.error('Token Says: Failed to save saying. Check the console for details.');
             }
-            tokenSays.TokenSaysSettingsConfig?.refresh();
         }
 
         _duplicateNameWarning() {

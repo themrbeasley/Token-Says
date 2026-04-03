@@ -51,6 +51,19 @@ export class tokenSays {
     }
 
     /**
+     * Open (or bring to front) the Token Says settings list, optionally pre-seeding the search.
+     * Creates a new instance if the list is not currently open.
+     * @param {string|null} searchTerm  Token/actor name to pre-fill the search box with
+     */
+    static openSettingsConfig(searchTerm) {
+        const form = this.TokenSaysSettingsConfig ?? new TokenSaysSettingsConfig();
+        if (searchTerm && typeof form.setLastSearch === 'function') {
+            form.setLastSearch(String(searchTerm).trim());
+        }
+        form.render(true);
+    }
+
+    /**
      * method that interrupts the renderedChatMessage (when called by that hook) to update the
      * Polyglot chat message and conform it to Token Says format
      * Need to do it this way as opposed to including HTML to start else Polyglot translates the html

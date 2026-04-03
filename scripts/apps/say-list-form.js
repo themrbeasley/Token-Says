@@ -138,14 +138,25 @@ Hooks.once('init', () => {
                         content: `<p>${game.i18n.localize("TOKENSAYS.confirm")}</p>`,
                         yes: {
                             callback: async () => {
-                                if (game.user.isGM && !isPlayerSaying) {
-                                    await says.deleteSay(sayId);
-                                } else if (game.user.isGM && isPlayerSaying) {
-                                    await says.deletePlayerSayForUser(ownerId, sayId);
-                                } else {
-                                    await says.deletePlayerSay(sayId);
+                                try {
+                                    if (game.user.isGM && !isPlayerSaying) {
+                                        await says.deleteSay(sayId);
+                                        this.refresh();
+                                    } else if (game.user.isGM && isPlayerSaying) {
+                                        // Refresh after the updateUser socket event propagates
+                                        // back to the GM client so _playerSays reads fresh data.
+                                        Hooks.once('updateUser', (user) => {
+                                            if (user.id === ownerId) this.refresh();
+                                        });
+                                        await says.deletePlayerSayForUser(ownerId, sayId);
+                                    } else {
+                                        await says.deletePlayerSay(sayId);
+                                        this.refresh();
+                                    }
+                                } catch (err) {
+                                    console.error('Token Says | Error deleting saying:', err);
+                                    ui.notifications?.error('Token Says: Failed to delete saying.');
                                 }
-                                this.refresh();
                             }
                         }
                     });
