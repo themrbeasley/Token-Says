@@ -113,6 +113,9 @@ export function chatMessageToWorkflowData(message){
         if (f.metadata?.rolls?.attacks) return parsed({documentType: 'attack', itemId: f.metadata.item});
         if(f.metadata?.item) return parsed({documentType: 'flavor', itemId: f.metadata.item});
         if(f.subject?.core === 'init') return parsed({documentType: 'initiative'});
+    } else if (game.world.system === 'crookedfalls') {
+        const cfData = _parseCrookedFallsChatMessage(message);
+        if (cfData) return parsed(cfData);
     }
     if(message.flags.core?.initiativeRoll) return parsed({documentType: 'initiative'});
     const prs = message.content ? _parseChatMessageHTML(message) : false;
@@ -125,6 +128,45 @@ function _parseChatMessageHTML(message){
     const parser = new DOMParser()
     const html = parser.parseFromString(message.content, 'text/html')
     if(html) return html.querySelectorAll(`div[data-item-id]`)[0]?.getAttribute("data-item-id");
+}
+
+function _parseCrookedFallsChatMessage(message) {
+    if (!message.content) return null;
+    const parser = new DOMParser();
+    const html   = parser.parseFromString(message.content, 'text/html');
+    const div    = html.querySelector('div.crookedfalls.roll-result');
+    if (!div) return null;
+
+    const h3Text  = div.querySelector('h3')?.textContent ?? '';
+    const dashIdx = h3Text.indexOf(' \u2014 ');
+    if (dashIdx === -1) return null;
+    const rawLabel = h3Text.substring(dashIdx + 3).trim(); // preserve case for item name extraction
+    const label    = rawLabel.toLowerCase();
+
+    let documentType, documentName = '';
+    if      (label === 'intellect')                            documentType = 'cf-intellect';
+    else if (label === 'agility')                              documentType = 'cf-agility';
+    else if (label === 'willpower')                            documentType = 'cf-willpower';
+    else if (label === 'fog defense')                          documentType = 'cf-fog-defense';
+    else if (label.startsWith('intellect defense vs.') ||
+             label.startsWith('agility defense vs.')   ||
+             label.startsWith('willpower defense vs.')) documentType = 'cf-defense';
+    else if (label === 'defense failed')               documentType = 'cf-defense-failed';
+    else if (label.startsWith('power activated:')) {
+        documentType = 'cf-power-activated';
+        documentName = rawLabel.substring('Power Activated:'.length).trim();
+    }
+    else if (label.startsWith('power ended:')) {
+        documentType = 'cf-power-ended';
+        documentName = rawLabel.substring('Power Ended:'.length).trim();
+    }
+    else if (label.startsWith('interference:')) {
+        documentType = 'cf-interference-use';
+        documentName = rawLabel.substring('Interference:'.length).trim();
+    }
+    else return null;
+
+    return documentName ? { documentType, documentName } : { documentType };
 }
 
 export function midiToWorkflowData(midiWorkflow, rollType){
