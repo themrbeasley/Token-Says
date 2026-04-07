@@ -367,11 +367,33 @@ Hooks.once('init', async function() {
                 if(data) workflow.go(userId, data);
             }
         });
-    
+
         Hooks.on("deleteItem", (document, options, userId) => {
             if(document.parent && (document.parent.token?.parent?.id || document.parent?.id) && ["condition", "effect"].includes(document.type)){
                 const data = pf2eItemToWorkflowData(document, true)
                 if(data) workflow.go(userId, data);
+            }
+        });
+    }
+
+    if(game.system.id === "crookedfalls"){
+        Hooks.on("createItem", (document, options, userId) => {
+            if(document.parent && (document.parent.token?.parent?.id || document.parent?.id) && document.type === "tag"){
+                const data = pf2eItemToWorkflowData(document)
+                if(data) {
+                    if(document.system?.kind === "item") data.documentType = "cf-item-add";
+                    workflow.go(userId, data);
+                }
+            }
+        });
+
+        Hooks.on("deleteItem", (document, options, userId) => {
+            if(document.parent && (document.parent.token?.parent?.id || document.parent?.id) && document.type === "tag"){
+                const data = pf2eItemToWorkflowData(document, true)
+                if(data) {
+                    if(document.system?.kind === "item") data.documentType = "cf-item-remove";
+                    workflow.go(userId, data);
+                }
             }
         });
     }
