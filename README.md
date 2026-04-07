@@ -270,6 +270,7 @@ I’ll continue maintaining and updating this module for as long as the communit
 * D&D 5e
 * PF1
 * PF2e
+* Crooked Falls
 
 # 🔌 Module Compatibility
 
