@@ -1,4 +1,4 @@
-import { tokenSays } from '../token-says.js';
+import { tokenSays } from '../token-quips.js';
 import {say, reacts} from './say.js';
 import {BYPASSNAMETYPES} from './constants.js';
 import {regTestTermList} from './helpers.js';
@@ -254,7 +254,7 @@ import { foundryInterface } from '../foundry-interface.js'
         for(const sy of sys){
             const sound = await sy.sound()
             foundryInterface.audioHelper.preloadSound(sound)
-            game.socket.emit('module.token-says', {load: sound});
+            game.socket.emit('module.token-quips', {load: sound});
         }
     }
 

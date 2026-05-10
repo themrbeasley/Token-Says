@@ -1,4 +1,4 @@
-import {tokenSays} from "./token-says.js";
+import {tokenSays} from "./token-quips.js";
 import {workflow} from "./apps/workflow.js";
 import {TokenSaysTokenForm} from "./apps/token-form.js";
 import {TokenSaysSettingsConfig} from './apps/say-list-form.js';
@@ -11,7 +11,7 @@ import { buildInterface, foundryInterface } from './foundry-interface.js'
 export var tokenSaysHasPolyglot = false, tokenSaysHasMQ = false;
 
 Hooks.once('init', async function() { 
-    const module = 'token-says';
+    const module = 'token-quips';
     buildInterface()
     game.settings.registerMenu(module, "tokenSaysRules", {
         name: game.i18n.localize("TOKENSAYS.setting.tokenSaysRules.name"),
@@ -161,7 +161,7 @@ Hooks.once('init', async function() {
     const {SHIFT, CONTROL, ALT} = KeyboardManager.MODIFIER_KEYS;
     game.keybindings.register(module, 'prompt', {
         name: "Prompt Token Saying",
-        hint: "Prompts a token to speak using a Token Says 'Prompt' or 'Alternate Prompt' saying.",
+        hint: "Prompts a token to speak using a Token Quips 'Prompt' or 'Alternate Prompt' saying.",
         editable: [{key: "KeyP"}],
         onDown: tokenSays._prompt,
         reservedModifiers: [SHIFT]
@@ -222,9 +222,9 @@ Hooks.once('init', async function() {
 
     // Re-apply search filter and form state on re-render (works for both FormApplication and ApplicationV2)
     Hooks.on("renderApplication", (app, html, options) => {
-        if(app.id ==="token-says-rules"){
+        if(app.id ==="token-quips-rules"){
             app._filter?.();
-        } else if (app.id ==="token-says-rules-rule"){
+        } else if (app.id ==="token-quips-rules-rule"){
             app._duplicateNameWarning?.();
             app._notExistsWarning?.();
         }
@@ -292,7 +292,7 @@ Hooks.once('init', async function() {
         choices: getCompendiumOps('rollTable')
     });  
 
-    game.socket.on("module.token-says", async (inSays) => {
+    game.socket.on("module.token-quips", async (inSays) => {
         if(inSays.sound){
             tokenSays.log(false,'Socket Call... ', {sound: inSays.sound});
             const sounds = game.audio.playing.values();

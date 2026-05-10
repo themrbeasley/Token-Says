@@ -1,4 +1,4 @@
-import {tokenSays} from '../token-says.js';
+import {tokenSays} from '../token-quips.js';
 import {says} from './says.js';
 import {TokenSaysSayForm} from './say-form.js';
 import {parseSeparator} from './helpers.js';
@@ -15,8 +15,8 @@ Hooks.once('init', () => {
 
     TokenSaysSettingsConfig = class TokenSaysSettingsConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         static DEFAULT_OPTIONS = {
-            id: "token-says-rules",
-            classes: ["sheet", "token-says"],
+            id: "token-quips-rules",
+            classes: ["sheet", "token-quips"],
             window: { title: "TOKENSAYS.setting.tokenSaysRules.name" },
             position: { width: 700 }
         };
@@ -54,13 +54,13 @@ Hooks.once('init', () => {
                 el.addEventListener('click', (event) => this._handleButtonClick(event));
             });
 
-            html.querySelector('#token-says-search-clear')
+            html.querySelector('#token-quips-search-clear')
                 ?.addEventListener('click', (e) => this._clearFilter(e));
-            html.querySelector('#token-says-search-input')
+            html.querySelector('#token-quips-search-input')
                 ?.addEventListener('input', (e) => this._preFilter(e));
-            html.querySelector('#token-says-export-config')
+            html.querySelector('#token-quips-export-config')
                 ?.addEventListener('click', () => this._exportSettingsToJSON());
-            html.querySelector('#token-says-import-config')
+            html.querySelector('#token-quips-import-config')
                 ?.addEventListener('click', () => this._importSettingsFromJSON());
 
             // Active-status toggles handled directly (no form submit needed)
@@ -154,8 +154,8 @@ Hooks.once('init', () => {
                                         this.refresh();
                                     }
                                 } catch (err) {
-                                    console.error('Token Says | Error deleting saying:', err);
-                                    ui.notifications?.error('Token Says: Failed to delete saying.');
+                                    console.error('Token Quips | Error deleting saying:', err);
+                                    ui.notifications?.error('Token Quips: Failed to delete saying.');
                                 }
                             }
                         }
@@ -184,8 +184,8 @@ Hooks.once('init', () => {
             const html = this.element;
             if (!html) return;
 
-            const clear = html.querySelector("#token-says-search-clear");
-            const searchBox = html.querySelector("#token-says-search-input");
+            const clear = html.querySelector("#token-quips-search-clear");
+            const searchBox = html.querySelector("#token-quips-search-input");
 
             if (lastSearch !== '') {
                 clear?.classList.remove('hidden');
@@ -195,8 +195,8 @@ Hooks.once('init', () => {
                 searchBox?.classList.remove('outline');
             }
 
-            html.querySelectorAll("form.token-says .rule").forEach(el => el.style.display = 'none');
-            html.querySelectorAll("form.token-says .rule .rule-name .ts-search-name").forEach(el => {
+            html.querySelectorAll("form.token-quips .rule").forEach(el => el.style.display = 'none');
+            html.querySelectorAll("form.token-quips .rule .rule-name .ts-search-name").forEach(el => {
                 const text = el.textContent ?? '';
                 if (!lastSearch || parseSeparator(lastSearch).find(s =>
                     (!text.startsWith('not:') && text.toLowerCase().includes(s.toLowerCase())) ||
@@ -209,7 +209,7 @@ Hooks.once('init', () => {
 
         _clearFilter(event) {
             event.preventDefault();
-            const searchInput = this.element?.querySelector("#token-says-search-input");
+            const searchInput = this.element?.querySelector("#token-quips-search-input");
             if (searchInput) searchInput.value = '';
             this.setLastSearch('');
             this._filter();
@@ -221,7 +221,7 @@ Hooks.once('init', () => {
 
         async _exportSettingsToJSON() {
             await says.deleteSay("rules");
-            saveDataToFile(JSON.stringify(says._says, null, 2), "text/json", `fvtt-token-says-rules.json`);
+            saveDataToFile(JSON.stringify(says._says, null, 2), "text/json", `fvtt-token-quips-rules.json`);
         }
 
         async _importFromJSON(json) {
@@ -241,7 +241,7 @@ Hooks.once('init', () => {
         }
 
         async _importSettingsFromJSON() {
-            const options = { name: "Token Says", entity: "token-says" };
+            const options = { name: "Token Quips", entity: "token-quips" };
             const content = await renderTemplate("templates/apps/import-data.html", options);
             const DialogV2 = foundry.applications.api.DialogV2;
             DialogV2.prompt({

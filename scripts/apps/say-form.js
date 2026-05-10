@@ -1,5 +1,5 @@
 import {ACTORTYPES, BYPASSNAMETYPES, determineMacroList, DOCUMENTNAMELABELS, GAMETYPEOPS, getWorldDocumentNameOptions, getCompendiumOps, getPolyglotLanguages, PLAYTYPE, PLAYTYPEROLLTABLE, WHISPEROPTIONS} from './constants.js';
-import {tokenSays} from '../token-says.js';
+import {tokenSays} from '../token-quips.js';
 import {says} from './says.js';
 import {parseSeparator, wildcardName} from './helpers.js';
 
@@ -27,8 +27,8 @@ Hooks.once('init', () => {
         }
 
         static DEFAULT_OPTIONS = {
-            id: "token-says-rules-rule",
-            classes: ["sheet", "token-says-rule"],
+            id: "token-quips-rules-rule",
+            classes: ["sheet", "token-quips-rule"],
             window: { title: "TOKENSAYS.setting.tokenSaysRule.name" },
             position: { width: 400 }
             // form submission is handled explicitly in _onRender to ensure
@@ -101,10 +101,10 @@ Hooks.once('init', () => {
             });
 
             // --- Event listeners ---
-            html.querySelector('#token-says-documenttype-value')
+            html.querySelector('#token-quips-documenttype-value')
                 ?.addEventListener('change', (e) => {
                     this._refreshDocumentNameOptions(e.currentTarget.value, '');
-                    const reactsDiv = html.querySelector('#token-says-reacts');
+                    const reactsDiv = html.querySelector('#token-quips-reacts');
                     const reactsTab = html.querySelector('[data-tab="reacts"]');
                     if (e.currentTarget.value === 'reacts') {
                         reactsDiv?.classList.remove('hidden');
@@ -113,27 +113,27 @@ Hooks.once('init', () => {
                         reactsDiv?.classList.add('hidden');
                         reactsTab?.classList.add('hidden');
                     }
-                    const capDiv = html.querySelector('#token-says-cap');
+                    const capDiv = html.querySelector('#token-quips-cap');
                     if (capDiv) {
                         e.currentTarget.value === 'move'
                             ? capDiv.classList.remove('hidden')
                             : capDiv.classList.add('hidden');
                     }
-                    const lbl = html.querySelector('#token-says-documentname-label');
+                    const lbl = html.querySelector('#token-quips-documentname-label');
                     if (lbl) lbl.innerHTML = this.documentNameLabel(e.currentTarget.value);
                 });
 
-            html.querySelector('#token-says-documenttype-reacts-value')
+            html.querySelector('#token-quips-documenttype-reacts-value')
                 ?.addEventListener('change', (e) => {
                     this._refreshDocumentNameOptions(e.currentTarget.value, 'to.');
-                    const lbl = html.querySelector('#token-says-documentname-reacts-label');
+                    const lbl = html.querySelector('#token-quips-documentname-reacts-label');
                     if (lbl) lbl.innerHTML = this.documentNameLabel(e.currentTarget.value);
                     this._duplicateNameWarning();
                 });
 
-            html.querySelector('#token-says-fileTitle-audio-value')
+            html.querySelector('#token-quips-fileTitle-audio-value')
                 ?.addEventListener('change', (e) => {
-                    const audioSeq = html.querySelector('#token-says-play-type-audio-label');
+                    const audioSeq = html.querySelector('#token-quips-play-type-audio-label');
                     if (audioSeq) {
                         e.currentTarget.value
                             ? audioSeq.classList.add('hidden')
@@ -141,9 +141,9 @@ Hooks.once('init', () => {
                     }
                 });
 
-            html.querySelector('#token-says-fileTitle-chat-value')
+            html.querySelector('#token-quips-fileTitle-chat-value')
                 ?.addEventListener('change', (e) => {
-                    for (const id of ['#token-says-fileName-chat-label', '#token-says-compendium-chat-label', '#token-says-play-type-chat-label']) {
+                    for (const id of ['#token-quips-fileName-chat-label', '#token-quips-compendium-chat-label', '#token-quips-play-type-chat-label']) {
                         const el = html.querySelector(id);
                         if (el) {
                             e.currentTarget.value
@@ -153,24 +153,24 @@ Hooks.once('init', () => {
                     }
                 });
 
-            html.querySelector('#token-says-documentname-reacts-value')
+            html.querySelector('#token-quips-documentname-reacts-value')
                 ?.addEventListener('change', () => this._duplicateNameWarning());
 
-            html.querySelector('#token-says-name-value')
+            html.querySelector('#token-quips-name-value')
                 ?.addEventListener('input', () => {
                     this._duplicateNameWarning();
                     this._existsCheck('name');
                 });
 
-            html.querySelector('#token-says-name-is-actor')
+            html.querySelector('#token-quips-name-is-actor')
                 ?.addEventListener('change', () => this._existsCheck('name'));
-            html.querySelector('#token-says-name-is-wildcard')
+            html.querySelector('#token-quips-name-is-wildcard')
                 ?.addEventListener('change', () => this._existsCheck('name'));
-            html.querySelector('#token-says-to-name-value')
+            html.querySelector('#token-quips-to-name-value')
                 ?.addEventListener('input', () => this._existsCheck('to-name'));
-            html.querySelector('#token-says-to-name-is-actor')
+            html.querySelector('#token-quips-to-name-is-actor')
                 ?.addEventListener('change', () => this._existsCheck('to-name'));
-            html.querySelector('#token-says-to-name-is-wildcard')
+            html.querySelector('#token-quips-to-name-is-wildcard')
                 ?.addEventListener('change', () => this._existsCheck('to-name'));
 
             // Initial state
@@ -181,8 +181,8 @@ Hooks.once('init', () => {
         async _refreshDocumentNameOptions(documentType, reacts) {
             const html = this.element;
             const reactsHTML = reacts ? '-reacts' : '';
-            const documentName = html.querySelector(`#token-says-documentname${reactsHTML}-value`)?.value ?? '';
-            const documentNameSelectHTML = html.querySelector(`#token-says-documentname${reactsHTML}`);
+            const documentName = html.querySelector(`#token-quips-documentname${reactsHTML}-value`)?.value ?? '';
+            const documentNameSelectHTML = html.querySelector(`#token-quips-documentname${reactsHTML}`);
             if (documentNameSelectHTML) {
                 documentNameSelectHTML.innerHTML = this._createNameOptionsHTML(documentType, documentName, reacts);
             }
@@ -191,8 +191,8 @@ Hooks.once('init', () => {
 
         _documentNameWildcardHTML(documentType, reacts) {
             const suppress = this._suppressDocumentNameWildcard(documentType);
-            const wc = this.element.querySelector(`#token-says-documentname${reacts}-is-wildcard`);
-            const formGroup = this.element.querySelector(`#token-says-documentname${reacts}-is-wildcard-formgroup`);
+            const wc = this.element.querySelector(`#token-quips-documentname${reacts}-is-wildcard`);
+            const formGroup = this.element.querySelector(`#token-quips-documentname${reacts}-is-wildcard-formgroup`);
             if (!wc) return;
             if (suppress) {
                 wc.checked = false;
@@ -220,10 +220,10 @@ Hooks.once('init', () => {
                     }
                     optionList += '<option value="' + sortedList[i][0] + '" ' + selected + '>' + sortedList[i][1] + '</option>';
                 }
-                finalHTML = `<select id="token-says-documentname${reactsHTML}-value" name="${reacts}documentName" value="` + documentName + '">' + optionList + '</select>';
+                finalHTML = `<select id="token-quips-documentname${reactsHTML}-value" name="${reacts}documentName" value="` + documentName + '">' + optionList + '</select>';
             } else {
                 if (BYPASSNAMETYPES.includes(documentType) || documentType === 'reacts') { disabled = ' disabled '; }
-                finalHTML = `<input id="token-says-documentname${reactsHTML}-value" type="text" name="${reacts}documentName" value="` + documentName + '" ' + disabled + '/>';
+                finalHTML = `<input id="token-quips-documentname${reactsHTML}-value" type="text" name="${reacts}documentName" value="` + documentName + '" ' + disabled + '/>';
             }
             return finalHTML;
         }
@@ -249,26 +249,26 @@ Hooks.once('init', () => {
                     tokenSays.TokenSaysSettingsConfig.refresh();
                 }
             } catch (err) {
-                console.error('Token Says | Error saving saying:', err);
-                ui.notifications?.error('Token Says: Failed to save saying. Check the console for details.');
+                console.error('Token Quips | Error saving saying:', err);
+                ui.notifications?.error('Token Quips: Failed to save saying. Check the console for details.');
             }
         }
 
         _duplicateNameWarning() {
             const html = this.element;
-            const warning = html?.querySelector('#token-says-rule-dup-name-warning');
+            const warning = html?.querySelector('#token-quips-rule-dup-name-warning');
             if (!warning) return;
 
-            const reactsTypeEl = html.querySelector('#token-says-documenttype-reacts-value');
+            const reactsTypeEl = html.querySelector('#token-quips-documenttype-reacts-value');
             if (!reactsTypeEl) return;
 
             if (reactsTypeEl.value === 'say') {
-                html.querySelector('#token-says-to-name')?.classList.add('hidden');
-                const toNameActor = html.querySelector('#token-says-to-name-is-actor');
+                html.querySelector('#token-quips-to-name')?.classList.add('hidden');
+                const toNameActor = html.querySelector('#token-quips-to-name-is-actor');
                 if (toNameActor) toNameActor.disabled = true;
 
-                const reactsId = html.querySelector('#token-says-documentname-reacts-value')?.value;
-                const nameVal = html.querySelector('#token-says-name-value')?.value;
+                const reactsId = html.querySelector('#token-quips-documentname-reacts-value')?.value;
+                const nameVal = html.querySelector('#token-quips-name-value')?.value;
                 if (nameVal === says.getSay(reactsId)?.name) {
                     warning.classList.remove('hidden');
                 } else {
@@ -276,8 +276,8 @@ Hooks.once('init', () => {
                 }
             } else {
                 warning.classList.add('hidden');
-                html.querySelector('#token-says-to-name')?.classList.remove('hidden');
-                const toNameActor = html.querySelector('#token-says-to-name-is-actor');
+                html.querySelector('#token-quips-to-name')?.classList.remove('hidden');
+                const toNameActor = html.querySelector('#token-quips-to-name-is-actor');
                 if (toNameActor) toNameActor.disabled = false;
             }
         }
@@ -290,14 +290,14 @@ Hooks.once('init', () => {
         _existsCheck(id) {
             if (id === 'name' || id === 'to-name') {
                 const fails = [];
-                const isWildcard = this.element.querySelector(`#token-says-${id}-is-wildcard`)?.checked ?? false;
-                const isActor = this.element.querySelector(`#token-says-${id}-is-actor`)?.checked ?? false;
+                const isWildcard = this.element.querySelector(`#token-quips-${id}-is-wildcard`)?.checked ?? false;
+                const isActor = this.element.querySelector(`#token-quips-${id}-is-actor`)?.checked ?? false;
                 const warnId = isActor ? 'actor' : 'token';
 
-                this.element.querySelector(`#token-says-${id}-token-warning-container`)?.classList.add('hidden');
-                this.element.querySelector(`#token-says-${id}-actor-warning-container`)?.classList.add('hidden');
+                this.element.querySelector(`#token-quips-${id}-token-warning-container`)?.classList.add('hidden');
+                this.element.querySelector(`#token-quips-${id}-actor-warning-container`)?.classList.add('hidden');
 
-                const nameConcat = this.element.querySelector(`#token-says-${id}-value`)?.value;
+                const nameConcat = this.element.querySelector(`#token-quips-${id}-value`)?.value;
                 if (nameConcat) {
                     const namesParsed = parseSeparator(nameConcat);
                     const nameList = !isWildcard
@@ -317,10 +317,10 @@ Hooks.once('init', () => {
                     }
                 }
 
-                const warning = this.element.querySelector(`#token-says-${id}-${warnId}-warning`);
+                const warning = this.element.querySelector(`#token-quips-${id}-${warnId}-warning`);
                 if (fails.length) {
                     if (warning) warning.innerHTML = fails.join(', ');
-                    this.element.querySelector(`#token-says-${id}-${warnId}-warning-container`)?.classList.remove('hidden');
+                    this.element.querySelector(`#token-quips-${id}-${warnId}-warning-container`)?.classList.remove('hidden');
                 } else {
                     if (warning) warning.innerHTML = '';
                 }

@@ -1,8 +1,8 @@
-import { tokenSays } from './token-says.js';
+import { tokenSays } from './token-quips.js';
 import { TokenSaysSettingsConfig } from './apps/say-list-form.js';
 
 /*
- * Token Says header controls for Foundry V13
+ * Token Quips header controls for Foundry V13
  *
  * This script registers header buttons for the TokenConfig and
  * PrototypeTokenConfig sheets in Foundry V13.  When using
@@ -32,7 +32,7 @@ Hooks.once("init", () => {
   }
 
   /**
-   * Create and register a header control for the Token Says module.
+   * Create and register a header control for the Token Quips module.
    *
    * @param {Object} app The application instance
    * @param {Array} controls The array of ApplicationHeaderControlsEntry objects
@@ -40,8 +40,8 @@ Hooks.once("init", () => {
   function addTokenSaysControl(app, controls) {
     controls.push({
       icon: "fa-solid fa-comment-dots",
-      label: "Token Says",
-      name: "token-says",
+      label: "Token Quips",
+      name: "token-quips",
       visible: () => true,
       onClick: () => {
         const actor = getActorFromApp(app);

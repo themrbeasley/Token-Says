@@ -22,8 +22,8 @@
   "description": "Tokens invoke chat bubbles, chat messages and audio based on in game actions.",
   "esmodules": [
     "scripts/index.js",
-    "scripts/token-says.js"
-    ,"scripts/header-controls.js"
+    "scripts/token-quips.js",
+    "scripts/header-controls.js"
   ],
   "languages": [
     {
@@ -37,11 +37,11 @@
     "minimum": "12",
     "verified": "14"
   },
-  "id": "token-says",
+  "id": "token-quips",
   "packs": [
     {
-      "name": "token-says",
-      "label": "Token Says",
+      "name": "token-quips",
+      "label": "Token Quips",
       "path": "packs/macros",
       "type": "Macro",
       "ownership": {
@@ -52,11 +52,11 @@
   ],
   "socket": true,
   "styles": [
-    "styles/token-says.css"
+    "styles/token-quips.css"
   ],
-  "title": "Token Says",
-  "version": "1.13.5",
-  "url": "https://github.com/themrbeasley/Token-Says",
-  "manifest": "https://github.com/themrbeasley/Token-Says/releases/latest/download/module.json",
-  "download": "https://github.com/themrbeasley/Token-Says/releases/download/v1.13.5/module.zip"
+  "title": "Token Quips",
+  "version": "2.0.0",
+  "url": "https://github.com/themrbeasley/Token-Quips",
+  "manifest": "https://github.com/themrbeasley/Token-Quips/releases/latest/download/module.json",
+  "download": "https://github.com/themrbeasley/Token-Quips/releases/download/v2.0.0/module.zip"
 }

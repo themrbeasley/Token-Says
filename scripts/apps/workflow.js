@@ -1,6 +1,6 @@
 import {says} from './says.js';
 import {tokenSay} from './say.js';
-import {tokenSays} from '../token-says.js';
+import {tokenSays} from '../token-quips.js';
 import {inDistance, inView} from './helpers.js';
 
 export const WORKFLOWSTATES = {
