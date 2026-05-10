@@ -112,9 +112,9 @@ Each saying is configured on a specific token or actor, based on name, for a giv
   * Token Movement Start: list the scenes where this saying can play (using the Scene Name). Leave blank to play on all scenes.
   * Token Movement End: list the scenes where this saying can play (using the Scene Name). Leave blank to play on all scenes.
   * Turn in Combat: leave blank
-* **Token Says:** Use this to bypass randomization. Type in here what the token will say. For audio files, this is the name of the file to play for the given playlist or, if no playlist is included, this is the actual path to the audio file.
-* **Playlist Name/Rollable Table Name:** The name of the rollable table or playlist. This can be left blank for rollable table sayings if you have entered something in the 'Token Says' field.
-* **Compendium:** choose the compendium from which the roll table or playlist will be found. Note that this overrides your default compendium set in your Token Quips settings. If you have selected in your settings to search your world's playlists or rollable tables first, those will be searched before going to this compendium. This can be left blank for rollable table sayings if you have entered something in the 'Token Says' field.
+* **Token Quips:** Use this to bypass randomization. Type in here what the token will say. For audio files, this is the name of the file to play for the given playlist or, if no playlist is included, this is the actual path to the audio file.
+* **Playlist Name/Rollable Table Name:** The name of the rollable table or playlist. This can be left blank for rollable table sayings if you have entered something in the 'Token Quips' field.
+* **Compendium:** choose the compendium from which the roll table or playlist will be found. Note that this overrides your default compendium set in your Token Quips settings. If you have selected in your settings to search your world's playlists or rollable tables first, those will be searched before going to this compendium. This can be left blank for rollable table sayings if you have entered something in the 'Token Quips' field.
 * **Whisper to:** for chat messages (does not affect chat bubble or audio at this time), set the message to whisper to certain users:
   * GM: whisper to the GM only.
   * Token Owner: whispers only to the owner(s) of the token that is saying the message (requires one of the owners to be logged in). Does not whisper to the GM (even if GM is the only owner).

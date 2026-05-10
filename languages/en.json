@@ -85,7 +85,7 @@
       "defaultRollableTableCompendium.label": "Default Rollable Table Compendium",
       "defaultRollableTableCompendium.description": "This is the compendium that will be accessed by default when determining where the saying's rolltable is stored. Individual sayings may override this default.",
       "isActive.label": "Activate Token Quips",
-      "isActive.description": "Activates all of the active token says sayings for this world.",
+      "isActive.description": "Activates all active sayings for this world.",
       "pan": {
         "description": "Configure whether to automatically pan to speaking token when it displays a Token Quips chat bubble.",
         "label": "Pan to Token Speaker",

@@ -7,7 +7,7 @@ import {promptToWorkflowData} from './apps/helpers.js';
  */
 export class tokenSays {
     static ID = 'token-quips';
-    static NAME = 'tokenQuips';
+    static NAME = 'tokenSays';
 
     static FLAGS = {
       TOKENSAYS: 'token-quips',
