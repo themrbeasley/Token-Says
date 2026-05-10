@@ -1,20 +1,22 @@
-# 📣 Token Says
+# Token Quips
 
 Make your worlds louder, funnier, more dramatic, and more alive.
-**Token Says** gives tokens the ability to speak, quip, hiss, roar, mutter, or make any other sound automatically based on in-game actions.
+**Token Quips** gives tokens the ability to speak, quip, hiss, roar, mutter, or make any other sound automatically based on in-game actions.
 
-Use playlists, roll tables, or custom text to define what a token “says.”
+Use playlists, roll tables, or custom text to define what a token "says."
 Give characters personality. Give monsters flavor. Give your players a little chaos.
+
+> **Lineage:** Token Quips is a continuation of the original *Token Says* module by napolitanod, later maintained by Hanna. That project is no longer actively maintained. Token Quips carries forward full compatibility with Foundry V13+ under a new module ID (`token-quips`) and is licensed under [GPL-3.0](./LICENSE).
 
 ---
 
-# 🎥 Video Overview
+# Video Overview
 
 https://youtu.be/6_nBcyni0xs
 
 ---
 
-# ✨ Why Use Token Says?
+# Why Use Token Quips?
 
 * Characters can quip automatically during attacks.
 * Monsters can roar when taking damage.
@@ -49,9 +51,9 @@ You can set up:
 
 ---
 
-# 🧠 How It Works
+# How It Works
 
-The Token Says feature uses a set of Token Says sayings that you create for your world in order to auto generate chat messages, chat bubbles and audio sounds when specific tokens or actors do something. The token may say the same thing every time or it can be randomized using a playlist or rollable table. Other features include:
+Token Quips uses a set of sayings that you create for your world in order to auto generate chat messages, chat bubbles and audio sounds when specific tokens or actors do something. The token may say the same thing every time or it can be randomized using a playlist or rollable table. Other features include:
 * Use of compendium data so that the rollable tables and playlists do not need to be in your world (though you can use your world's data too). KEEP IN MIND THAT PLAYING FROM A COMPENDIUM CAN BE SLOW.
 * Sayings can be specific to a certain action (e.g. token performs an attack roll with a warhammer) or generic (e.g. token performs an ability check).
 * Sayings can be any text or sound - it doesn't have to be actual talking. Explosions on attack or footsteps on movement are valid uses.
@@ -65,13 +67,11 @@ The Token Says feature uses a set of Token Says sayings that you create for your
 
 ---
 
-# 📝 Configuring Sayings
-
-<img width="800" alt="image" src="https://github.com/napolitanod/Token-Says/assets/22696153/6e692a71-d826-4cfc-973b-198633de5d60">
+# Configuring Sayings
 
 Each saying is configured on a specific token or actor, based on name, for a given action and the saying is only hit when that token or actor performs the action. 
 * **Title:** Name each saying . The name is what displays in the Configure Token Sayings list.
-* **Token Name:** Name the token for which this saying applies. This is case sensitive and mind the spelling! **Accepts multiple token names.** These must be delimited using the delimiter that you have chosen in your Token Says settings (e.g. Goblin|Witch|Werewolf ). Check the **Wildcard** box to search using '\*' wildcard within name.
+* **Token Name:** Name the token for which this saying applies. This is case sensitive and mind the spelling! **Accepts multiple token names.** These must be delimited using the delimiter that you have chosen in your Token Quips settings (e.g. Goblin|Witch|Werewolf ). Check the **Wildcard** box to search using '\*' wildcard within name.
 * **Use Actor Name:** Checking this will determine if the saying triggers based on the name of the actor associated to the token (as opposed to using the token name). This is useful in situations where your tokens may have different names than the source actor.
 * **Not Listed Names:** flip the 'Token Names' so that saying generates for any token except those in the token names list.
 * **Actor Type:** Select the actor type that token must be in order for saying to trigger (optional).
@@ -94,7 +94,7 @@ Each saying is configured on a specific token or actor, based on name, for a giv
   * Token Movement Start: triggered at the start of a token's move. The chat bubble will display at the token's start position. Audio will play at movement start.
   * Token Movement End: triggered at the end of a token's move. The chat bubble will display at the token's arrival position. Audio will play at movement end.
   * Turn in Combat: triggered at start of the token's turn in combat.
-* **Action Name:** Type in the name of the action associated to the action type. **Accepts multiple action names.** These must be delimited using the delimiter that you have chosen in your Token Says settings (e.g. Sword|Staff|Wand ). Check the **Wildcard** box to search using '\*' wildcard within name (available on action names that are text entry).
+* **Action Name:** Type in the name of the action associated to the action type. **Accepts multiple action names.** These must be delimited using the delimiter that you have chosen in your Token Quips settings (e.g. Sword|Staff|Wand ). Check the **Wildcard** box to search using '\*' wildcard within name (available on action names that are text entry).
   * Ability Check (dnd5e): select ability
   * Attack Roll (dnd5e, pf2e): use the item name making the attack (e.g. Longbow)
   * Condition/Effect Added: use the name of the condition or effect that triggers the saying when it is added or toggled on for the token.
@@ -112,9 +112,9 @@ Each saying is configured on a specific token or actor, based on name, for a giv
   * Token Movement Start: list the scenes where this saying can play (using the Scene Name). Leave blank to play on all scenes.
   * Token Movement End: list the scenes where this saying can play (using the Scene Name). Leave blank to play on all scenes.
   * Turn in Combat: leave blank
-* **Token Says:** Use this to bypass randomization. Type in here what the token will say. For audio files, this is the name of the file to play for the given playlist or, if no playlist is included, this is the actual path to the audio file.
-* **Playlist Name/Rollable Table Name:** The name of the rollable table or playlist. This can be left blank for rollable table sayings if you have entered something in the 'Token Says' field.
-* **Compendium:** choose the compendium from which the roll table or playlist will be found. Note that this overrides your default compendium set in your Token Says settings. If you have selected in your settings to search your world's playlists or rollable tables first, those will be searched before going to this compendium. This can be left blank for rollable table sayings if you have entered something in the 'Token Says' field.
+* **Token Quips:** Use this to bypass randomization. Type in here what the token will say. For audio files, this is the name of the file to play for the given playlist or, if no playlist is included, this is the actual path to the audio file.
+* **Playlist Name/Rollable Table Name:** The name of the rollable table or playlist. This can be left blank for rollable table sayings if you have entered something in the 'Token Quips' field.
+* **Compendium:** choose the compendium from which the roll table or playlist will be found. Note that this overrides your default compendium set in your Token Quips settings. If you have selected in your settings to search your world's playlists or rollable tables first, those will be searched before going to this compendium. This can be left blank for rollable table sayings if you have entered something in the 'Token Quips' field.
 * **Whisper to:** for chat messages (does not affect chat bubble or audio at this time), set the message to whisper to certain users:
   * GM: whisper to the GM only.
   * Token Owner: whispers only to the owner(s) of the token that is saying the message (requires one of the owners to be logged in). Does not whisper to the GM (even if GM is the only owner).
@@ -131,13 +131,13 @@ Each saying is configured on a specific token or actor, based on name, for a giv
    * **Alternate Audio Track:** Add a track to play instead of the primary track in the event that the Minimum Movement Time is not met.
 * **Activation Conditions:** A list of active effect labels, separated using your settings separator, that token must have one of in order for saying to trigger. Also supports condition labels for systems that utilize the effects data structure for conditions. Also supports wildcards (when adjacent box is checked).
 * **Likelihood:** Set on a scale of 1 to 100 what percent of the time the token will say something for this given saying. For example, a 33 for a likelihood that triggers on initiave rolls will cause the token to say something 33% of the time when they roll initiative.
-* **Limit:** Specify a number above 0. Token Says will count each time a token says this saying. Once that count meets this specified limit, that token will no longer say this saying. Counts towards limits live on each token on a scene and can be reset from within that token's token configuration form.
+* **Limit:** Specify a number above 0. Token Quips will count each time a token says this saying. Once that count meets this specified limit, that token will no longer say this saying. Counts towards limits live on each token on a scene and can be reset from within that token's token configuration form.
 * **Macro:** select a macro within the world to run when the saying triggers
   * If 'Advanced Macros' module is installed, an `args` object is passed in to the macro which includes data on saying, token, actor and scene.
 * **Responds To:** this section is made visible if the 'Responds to' Action Name is selected
   * **Action Type:** the type of action that this saying responds to. Has the same set of options as the 'Action Type' within this saying's 'Provoking action' section, accept 'Responds to' is not an option while 'Saying' is. 
   * **Action Name:** similar to 'Action Name' in the 'Provoking Action' section, but for the action this saying is responding to.
-  * **Token Names:** the name of the tokens that this saying is responding to. **Accepts multiple token names.** These must be delimited using the delimiter that you have chosen in your Token Says settings (e.g. Goblin|Witch|Werewolf ).
+  * **Token Names:** the name of the tokens that this saying is responding to. **Accepts multiple token names.** These must be delimited using the delimiter that you have chosen in your Token Quips settings (e.g. Goblin|Witch|Werewolf ).
   * **Use Actor Name:** similar to the setting in the 'Provoking Action' section, but for the token that this saying is responding to.
   * **Not Listed Names:** flip the 'Token Names' so that saying is responding to any token except those in the token names list.
   * **Only If In Sight:** requires the token to be able to see the token that they are responding to. Based on center-point calculation. Walls block.
@@ -150,55 +150,50 @@ Each saying is configured on a specific token or actor, based on name, for a giv
 
 ---
 
-# 🎛️ Token Form Access
+# Token Form Access
 
-To access Token Says for a specific token or actor:
+To access Token Quips for a specific token or actor:
 
 1. Open the Token or Prototype Token configuration
-2. Click the **three-dot menu** beside the “X”
-3. Choose **Token Says**
+2. Click the **three-dot menu** beside the "X"
+3. Choose **Token Quips**
 
 This opens the full sayings editor.
-<img width="1734" height="788" alt="Screenshot 2025-11-26 111244" src="https://github.com/user-attachments/assets/2208ce6d-9a46-4cb8-8b47-466133ec63bd" />
 
 ---
 
-# 🧩 API / Macro Usage
+# API / Macro Usage
 
 ### tokenSays.says() - ASYNC - call a specific saying from macro/script
 > tokenSays.says(tokenId, actorId, sayingName);
 
-The tokenSays.says(tokenId, actorId, actionName) function is made available for use within you macros and scripts. The function generates a Token Says message if a saying is found that matches the parameters that you pass in. The return from this function is the Token Says saying data for the saying identified by this function. 
+The tokenSays.says(tokenId, actorId, actionName) function is made available for use within you macros and scripts. The function generates a Token Quips message if a saying is found that matches the parameters that you pass in. The return from this function is the Token Quips saying data for the saying identified by this function. 
 
-To use this function you must have Token Says installed as a module and active and must have a saying with action type = "Macro (API)" with an Token Name that matches the alias of the token or name of the actor that you pass into the function as well as an Action Name that matches the actionName passed into the function.
+To use this function you must have Token Quips installed as a module and active and must have a saying with action type = "Macro (API)" with a Token Name that matches the alias of the token or name of the actor that you pass into the function as well as an Action Name that matches the actionName passed into the function.
 * tokenId (optional) - the token.id. Though optional, either this or actor must be passed in, else the function will be escaped
 * actorId (optional) - the actor.id. Can be derived from token if not provided.
-* actionName - this must match to your Token Says saying "Action Name" for the given actor or token.
+* actionName - this must match to your saying "Action Name" for the given actor or token.
   * If the Action Name on a saying with Action Type = Macro (API) is left blank then that saying will trigger for that actor/token regardless of the actionName set here in the macro. 
 
-![klhkg](https://user-images.githubusercontent.com/22696153/145907653-97f3c8de-8ac2-40bc-aea6-30967499de9a.png)
-> An example saying set up to trigger an audio saying via macro. Note that the macro code is 2 lines. In the first line it grabs a token id by using the current token controlled by the user triggering the macro.
-
-
-### tokenSays.saysDirect() - ASYNC - use Token Says functionality without a saying in place
+### tokenSays.saysDirect() - ASYNC - use Token Quips functionality without a saying in place
 > tokenSays.saysDirect(tokenId, actorId, sceneId, options)
 
-The tokenSays.saysDirect(tokenId, actorId, sceneId, options) function is available to module developers and Foundry users. The function generates a Token Says message based on the parameters. No existing sayings are referenced. This allows module developers and macro writers to dynamically have a token speak, giving them full control over the trigger. The return from this function is the Token Says workflow class that generated the saying.
+The tokenSays.saysDirect(tokenId, actorId, sceneId, options) function is available to module developers and Foundry users. The function generates a Token Quips message based on the parameters. No existing sayings are referenced. This allows module developers and macro writers to dynamically have a token speak, giving them full control over the trigger. The return from this function is the Token Quips workflow class that generated the saying.
 
-To use this function you must have Token Says installed 
+To use this function you must have Token Quips installed 
 * tokenId (optional) - the token.id. Though optional, either this or actor must be passed in, else the function will be escaped
 * actorId (optional) - the actor.id. Can be derived from token if not provided.
 * sceneId (optional) - the scene.id. If not provided, the scene id for the current scene will be used
 * options - object that dictates the rolltable or playlist that will be sourced as well as any compendium or likelihood data.
    * audio (optional) - object holding audio related data, used for generating the audio
-      * compendium - (optional) the compendium where the playlist is stored (e.g. 'token-says.token-says-macros'). Not required if playlist is in world
+      * compendium - (optional) the compendium where the playlist is stored (e.g. 'token-quips.token-quips'). Not required if playlist is in world
       * source - (optional) the name of the playlist. Will generate a track randomly from the playlist unless quote is also provided. Either this or the quote needs to be provided in order to generate audio.
       * quote - (optional) if source is filled in, then this is the name of the track in the playlist. If source is not filled in, then this is the file path to the audio file. Either this or the quote needs to be provided in order to generate audio.
    * chat (optional) - object holding chat related data, used for generating chat message and chat bubble
-      * compendium - (optional) the compendium where the rollable table is stored (e.g. 'token-says.token-says-macros'). Not required if rollable table is in world
+      * compendium - (optional) the compendium where the rollable table is stored (e.g. 'token-quips.token-quips'). Not required if rollable table is in world
       * source - (optional) the name of the rollable table. Will generate a saying randomly from the table. Either this or the quote needs to be provided in order to generate a chat message or bubble.
       * quote - (optional) what is actually said. Either this or the quote needs to be provided in order to generate a chat message or bubble.
-   * likelihood (optional) - as integer. The % of the time this will actually result in a Token Says message. if not provided, the default is 100. Must be between 0 and 100
+   * likelihood (optional) - as integer. The % of the time this will actually result in a Token Quips message. if not provided, the default is 100. Must be between 0 and 100
    * delay (optional) - default 0. in ms, inserts a delay between the triggering of the api call and when the saying is played. 
    * lang (optional) - the language to be used. Provide the code (e.g. 'common'). Requires Polyglot and token must actual be able to speak the language
    * suppress (optional) - suppress certain elements that the saying generates
@@ -233,18 +228,18 @@ const options = {
 ```
 ---
 
-# 💡 Enhancements & Suggestions
+# Enhancements & Suggestions
 
-Have an idea to improve Token Says?
+Have an idea to improve Token Quips?
 Please submit feature requests or suggestions here:
 
-👉 [https://github.com/themrbeasley/Token-Says/issues](https://github.com/themrbeasley/Token-Says/issues)
+[https://github.com/themrbeasley/Token-Quips/issues](https://github.com/themrbeasley/Token-Quips/issues)
 
 Community feedback drives development.
 
 ---
 
-# 🤖 Maintenance
+# Maintenance
 
 This module is actively maintained with the assistance of [Claude Code](https://claude.com/claude-code), Anthropic's AI coding tool.
 Claude Code assists with code review, refactoring, bug fixes, and compatibility updates.
@@ -252,27 +247,22 @@ All changes are reviewed and approved by the module maintainer before being merg
 
 ---
 
-# 🙏 Acknowledgements
+# Acknowledgements
 
-A huge thank-you to the original creators and contributors:
+Token Quips is a GPL-3.0 fork of *Token Says*, originally created by **napolitanod** and later maintained by **Hanna** and **DianeOfTheMoon**. Their work made this possible.
 
-* **napolitanod** (original author)
-* **Hanna**
-* **DianeOfTheMoon**
-
-And thank you to the community for using and supporting Token Says.
-I’ll continue maintaining and updating this module for as long as the community finds it useful.
+This fork was created because the upstream project was abandoned and no longer compatible with modern Foundry versions. Token Quips carries forward the full feature set with V13+ compatibility, bug fixes, and new capabilities.
 
 ---
 
-# 🛠️ System Compatibility
+# System Compatibility
 
 * D&D 5e
 * PF1
 * PF2e
 * Crooked Falls
 
-# 🔌 Module Compatibility
+# Module Compatibility
 
 * **Midi-QOL** - Required for expanded functionality, not required for base functionalities
 * **Polyglot** - Required for sending chats in specific languages

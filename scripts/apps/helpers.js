@@ -1,4 +1,4 @@
-import {tokenSays} from '../token-says.js';
+import {tokenSays} from '../token-quips.js';
 import {PF2ESKILLOPS, PF2ESAVEOPS, PF2EABILITYOPS} from './constants.js';
 
 /*
@@ -8,7 +8,7 @@ import {PF2ESKILLOPS, PF2ESAVEOPS, PF2EABILITYOPS} from './constants.js';
  * class once up‐front. In pre‑v13 builds the global Ray will still be
  * defined; in v13 we fall back to the new namespaced version. See
  * https://foundryvtt.com/api/classes/foundry.canvas.geometry.Ray.html
- * for details. Without this shim Token Says would throw a ReferenceError
+ * for details. Without this shim Token Quips would throw a ReferenceError
  * when trying to instantiate a Ray.
  */
 const RayClass = globalThis.Ray ?? (foundry?.canvas?.geometry?.Ray ?? null);

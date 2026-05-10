@@ -1,7 +1,7 @@
 # Design System
 
 ## Overview
-Token Says adds immersion to online TTRPGs by letting tokens automatically speak, play audio, or roll on tables in response to in-game actions. Its UI is a set of **ApplicationV2** windows that open inside FoundryVTT — not a standalone app. The design language is therefore grounded in Foundry's native conventions, with module-specific additions layered on top.
+Token Quips adds immersion to online TTRPGs by letting tokens automatically speak, play audio, or roll on tables in response to in-game actions. Its UI is a set of **ApplicationV2** windows that open inside FoundryVTT — not a standalone app. The design language is therefore grounded in Foundry's native conventions, with module-specific additions layered on top.
 
 ## UI Architecture
 
@@ -15,7 +15,7 @@ The detail editor for a single saying. Uses a 5-tab layout: Basics, Reacts, Chat
 
 **Integration points** outside these windows:
 - Token Config header button — V12 via `token-form.js` (extends `TokenConfig`); V13+ via `header-controls.js` (`getHeaderControls` hook)
-- Chat output — `.token-says.chat-window` renders token image + spoken text inline in the Foundry chat log
+- Chat output — `.token-quips.chat-window` renders token image + spoken text inline in the Foundry chat log
 
 ## Fonts
 
@@ -27,7 +27,7 @@ Foundry's built-in typefaces are used throughout; do not introduce external font
 
 ## Colors
 
-Token Says inherits Foundry's earthy, parchment-adjacent palette. These are the specific values in use:
+Token Quips inherits Foundry's earthy, parchment-adjacent palette. These are the specific values in use:
 
 - **Muted UI chrome** (`#7a7971`): column header text, row control icons
 - **Row divider** (`#c9c7b8`): 1px border-bottom on each list row
@@ -50,11 +50,11 @@ Flexrow rows inside an `<ol class="rules-list">`. Each row (`li.rule`) contains:
 - GMs also see an owner badge next to the label for player-owned sayings
 
 ### Primary Controls Bar
-Above the list, `#token-says-primary-controls` at 36px height contains:
+Above the list, `#token-quips-primary-controls` at 36px height contains:
 
-- **Search bar** (`.token-says-search`, 84% width): 1px border, `border-radius: 2px`, absolute-positioned `fa-search` icon at left (8px), absolute-positioned clear button at right (circular, hidden until input has text)
-- **Export button** (`.token-says-json-export`, 7%): GM-only, `fa-file-export`
-- **Import button** (`.token-says-json-import`, 7%): GM-only, `fa-file-import`
+- **Search bar** (`.token-quips-search`, 84% width): 1px border, `border-radius: 2px`, absolute-positioned `fa-search` icon at left (8px), absolute-positioned clear button at right (circular, hidden until input has text)
+- **Export button** (`.token-quips-json-export`, 7%): GM-only, `fa-file-export`
+- **Import button** (`.token-quips-json-import`, 7%): GM-only, `fa-file-import`
 
 ### Tab Navigation
 `.sheet-tabs.tabs` with one `<a class="item">` per tab, each prefixed with a FontAwesome icon:
@@ -85,7 +85,7 @@ Used for **likelihood** (1–100) and **volume** (0.05–1.00). Each slider sits
 The Reacts tab body uses `.reacts` with `background: rgba(0,0,0,0.1)` and `padding: 5px`. Logical sections (what to react to / who reacts / spatial constraints) are separated by `<hr>` elements.
 
 ### Chat Window Output
-`.token-says.chat-window`: a flex row, `min-height: 50px`. The token image is `50×50px` with `border-width: 0`. The spoken text sits in `.what-is-said` with `margin-left: 8px`.
+`.token-quips.chat-window`: a flex row, `min-height: 50px`. The token image is `50×50px` with `border-width: 0`. The spoken text sits in `.what-is-said` with `margin-left: 8px`.
 
 ### Save Footer
 `.sheet-footer` at the bottom of the detail form. One submit button with `fa-save` icon and the localized "Save Changes" label.
