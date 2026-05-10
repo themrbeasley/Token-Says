@@ -173,21 +173,21 @@ Hooks.once('init', async function() {
     });
 
     Hooks.on("createActiveEffect", (document, options, userId) => {
-        if(document.parent && (document.parent.token?.parent?.id || document.parent?.id)){
+        if(document.parent && (document.parent.token?.parent?.id || document.parent.actor?.id)){
             const data = activeEffectToWorkflowData(document)
             if(data) workflow.go(userId, data);
         }
     });
 
     Hooks.on("deleteActiveEffect", (document, options, userId) => {
-        if(document.parent && (document.parent.token?.parent?.id || document.parent?.id)){
+        if(document.parent && (document.parent.token?.parent?.id || document.parent.actor?.id)){
             const data = activeEffectToWorkflowData(document, true)
             if(data) workflow.go(userId, data);
         }
     });
-    
+
     Hooks.on("updateActiveEffect", (document, change, options, userId) => {
-        if(document.parent && (document.parent.token?.parent?.id || document.parent?.id) && ("disabled" in change || ("label" in change && !document.disabled))){
+        if(document.parent && (document.parent.token?.parent?.id || document.parent.actor?.id) && ("disabled" in change || ("label" in change && !document.disabled))){
             const data = activeEffectToWorkflowData(document, change.disabled)
             if(data) workflow.go(userId, data);
         }
